@@ -1,0 +1,108 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Warden Registration - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-tie fa-3x text-primary"></i>
+                        <h2 class="fw-bold mt-3">Warden Registration</h2>
+                        <p class="text-muted">Create an account to manage gate passes.</p>
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.first_name }}
+                                    <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                                </div>
+                                {% if form.first_name.errors %}<div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.last_name }}
+                                    <label for="{{ form.last_name.id_for_label }}">Last Name *</label>
+                                </div>
+                                {% if form.last_name.errors %}<div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    {{ form.username }}
+                                    <label for="{{ form.username.id_for_label }}">Username *</label>
+                                </div>
+                                {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    {{ form.email }}
+                                    <label for="{{ form.email.id_for_label }}">Email Address *</label>
+                                </div>
+                                {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.mobile_number }}
+                                    <label for="{{ form.mobile_number.id_for_label }}">Mobile Number *</label>
+                                </div>
+                                {% if form.mobile_number.errors %}<div class="text-danger small mt-1">{{ form.mobile_number.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.gender }}
+                                    <label for="{{ form.gender.id_for_label }}">Gender *</label>
+                                </div>
+                                {% if form.gender.errors %}<div class="text-danger small mt-1">{{ form.gender.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    {{ form.department }}
+                                    <label for="{{ form.department.id_for_label }}">Department</label>
+                                </div>
+                                {% if form.department.errors %}<div class="text-danger small mt-1">{{ form.department.errors.0 }}</div>{% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.password1 }}
+                                    <label for="{{ form.password1.id_for_label }}">Password *</label>
+                                </div>
+                                {% if form.password1.errors %}<div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{ form.password2 }}
+                                    <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
+                                </div>
+                                {% if form.password2.errors %}<div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Your account will be reviewed by an admin before activation.
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

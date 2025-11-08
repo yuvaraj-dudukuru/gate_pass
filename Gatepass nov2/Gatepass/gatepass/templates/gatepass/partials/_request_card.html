@@ -1,0 +1,56 @@
+{% comment %}
+Renders a single gatepass request as a card for mobile views.
+
+Expects the following context variables:
+- request: The gatepass object.
+- list_type: A string to identify the type of list for actions.
+{% endcomment %}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+                <h6 class="fw-bold mb-0">{{ request.student.student_name }}</h6>
+                <small class="text-muted">{{ request.student.hall_ticket_no }} | Room: {{ request.student.room_no }}</small>
+            </div>
+            {% if list_type == 'pending' %}
+                <a href="{% url 'warden_approve_gatepass' request.id %}" class="btn btn-sm btn-primary">Review</a>
+            {% elif list_type == 'approved' %}
+                <span class="badge bg-success-light text-success">Approved</span>
+            {% elif list_type == 'rejected' %}
+                <span class="badge bg-danger-light text-danger">Rejected</span>
+            {% endif %}
+        </div>
+
+        <hr class="my-2">
+
+        {% if list_type == 'pending' or list_type == 'students_out' %}
+            <div class="row g-2">
+                <div class="col-6">
+                    <small class="text-muted d-block">Outing</small>
+                    <p class="fw-semibold mb-0 small">{{ request.outing_date }} {{ request.outing_time }}</p>
+                </div>
+                <div class="col-6">
+                    <small class="text-muted d-block">Expected Return</small>
+                    <p class="fw-semibold mb-0 small">{{ request.expected_return_date }}</p>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted d-block">Purpose</small>
+                <p class="mb-0 small">{{ request.purpose|truncatechars:100 }}</p>
+            </div>
+        {% elif list_type == 'returned' %}
+            <small class="text-muted d-block">Returned On</small>
+            <p class="fw-semibold mb-2 small">{{ request.actual_return_date }} {{ request.actual_return_time }}</p>
+            <small class="text-muted d-block">Verified By</small>
+            <p class="mb-0 small">{{ request.return_verified_by.username|default:"N/A" }}</p>
+        {% elif list_type == 'rejected' %}
+            <small class="text-muted d-block">Outing Date</small>
+            <p class="fw-semibold mb-2 small">{{ request.outing_date }}</p>
+            <small class="text-muted d-block">Rejection Reason</small>
+            <p class="mb-0 small text-danger">{{ request.warden_rejection_reason|truncatechars:100|default:"-" }}</p>
+        {% else %}
+            <p class="mb-0 small">{{ request.purpose|truncatechars:100 }}</p>
+        {% endif %}
+    </div>
+</div>

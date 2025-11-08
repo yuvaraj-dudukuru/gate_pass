@@ -1,0 +1,13 @@
+{% if gatepass.status == 'pending' %}
+    <span class="badge bg-light text-warning border border-warning">Pending</span>
+{% elif gatepass.status == 'warden_approved' %}
+    <span class="badge bg-light text-info border border-info">Warden Approved</span>
+{% elif gatepass.status == 'warden_rejected' %}
+    <span class="badge bg-light text-danger border border-danger">Rejected</span>
+{% elif gatepass.status == 'security_approved' %}
+    <span class="badge bg-light text-primary border border-primary">Out of Hostel</span>
+{% elif gatepass.status == 'returned' %}
+    <span class="badge bg-light text-success border border-success">Returned</span>
+{% elif gatepass.status == 'completed' %}
+    <span class="badge bg-light text-muted border">Completed</span>
+{% endif %}

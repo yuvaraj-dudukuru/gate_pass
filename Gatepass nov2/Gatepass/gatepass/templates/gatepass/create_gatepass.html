@@ -1,0 +1,194 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Create Gatepass Request - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Create Gatepass Request</h2>
+                        <p class="text-muted">Follow the steps to submit your request.</p>
+                    </div>
+
+                    <!-- Wizard Tabs -->
+                    <nav class="mb-4">
+                        <div class="nav nav-pills nav-fill wizard-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-step1-tab" data-bs-toggle="tab" data-bs-target="#nav-step1" type="button" role="tab" aria-controls="nav-step1" aria-selected="true">
+                                <i class="fas fa-user-check me-2"></i>Step 1: Verify Details
+                            </button>
+                            <button class="nav-link disabled" id="nav-step2-tab" data-bs-toggle="tab" data-bs-target="#nav-step2" type="button" role="tab" aria-controls="nav-step2" aria-selected="false">
+                                <i class="fas fa-calendar-alt me-2"></i>Step 2: Outing Details
+                            </button>
+                        </div>
+                    </nav>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="tab-content" id="nav-tabContent">
+                            <!-- Step 1: Verify Details -->
+                            <div class="tab-pane fade show active" id="nav-step1" role="tabpanel" aria-labelledby="nav-step1-tab">
+                                <h4 class="mb-3">Your Information</h4>
+                                <p class="text-muted mb-4">Please verify your details are correct. If anything is wrong, contact the hostel office.</p>
+                                
+                                <div class="card bg-light border-0 mb-4">
+                                    <div class="card-body">
+                                        <div class="row gy-3">
+                                            <div class="col-md-6">
+                                                <div class="text-muted small">Name</div>
+                                                <div class="fw-bold">{{ student.student_name }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="text-muted small">Hall Ticket</div>
+                                                <div>{{ student.hall_ticket_no }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="text-muted small">Room No</div>
+                                                <div>{{ student.room_no }}</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="text-muted small">Parent Contact</div>
+                                                <div>{{ student.parent_name }} ({{ student.parent_mobile }})</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn btn-primary rounded-pill px-4 py-2" id="next-step-btn">
+                                        Next <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Outing Details -->
+                            <div class="tab-pane fade" id="nav-step2" role="tabpanel" aria-labelledby="nav-step2-tab">
+                                <h4 class="mb-3">Outing Details</h4>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="{{ form.outing_date.id_for_label }}" class="form-label">Outing Date *</label>
+                                        {{ form.outing_date }}
+                                        <div class="invalid-feedback">Please select a valid outing date.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Outing Time *</label>
+                                        <div class="row g-2">
+                                            <div class="col-5">
+                                                <label for="{{ form.outing_hour.id_for_label }}" class="visually-hidden">Outing Hour</label>
+                                                {{ form.outing_hour }}
+                                            </div>
+                                            <div class="col-5">
+                                                <label for="{{ form.outing_minute.id_for_label }}" class="visually-hidden">Outing Minute</label>
+                                                {{ form.outing_minute }}
+                                            </div>
+                                            <div class="col-2">
+                                                <label for="{{ form.outing_ampm.id_for_label }}" class="visually-hidden">AM/PM</label>
+                                                {{ form.outing_ampm }}
+                                            </div>
+                                        </div>
+                                        {% if form.outing_hour.errors %}
+                                            <div class="text-danger"><small>{{ form.outing_hour.errors.0 }}</small></div>
+                                        {% endif %}
+                                        {% if form.outing_minute.errors %}
+                                            <div class="text-danger"><small>{{ form.outing_minute.errors.0 }}</small></div>
+                                        {% endif %}
+                                        {% if form.outing_ampm.errors %}
+                                            <div class="text-danger"><small>{{ form.outing_ampm.errors.0 }}</small></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="{{ form.expected_return_date.id_for_label }}" class="form-label">Expected Return Date *</label>
+                                        {{ form.expected_return_date }}
+                                        <div class="invalid-feedback">Please select a valid return date.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Expected Return Time *</label>
+                                        <div class="row g-2">
+                                            <div class="col-5">
+                                                <label for="{{ form.expected_return_hour.id_for_label }}" class="visually-hidden">Expected Return Hour</label>
+                                                {{ form.expected_return_hour }}
+                                            </div>
+                                            <div class="col-5">
+                                                <label for="{{ form.expected_return_minute.id_for_label }}" class="visually-hidden">Expected Return Minute</label>
+                                                {{ form.expected_return_minute }}
+                                            </div>
+                                            <div class="col-2">
+                                                <label for="{{ form.expected_return_ampm.id_for_label }}" class="visually-hidden">AM/PM</label>
+                                                {{ form.expected_return_ampm }}
+                                            </div>
+                                        </div>
+                                        {% if form.expected_return_hour.errors %}
+                                            <div class="text-danger"><small>{{ form.expected_return_hour.errors.0 }}</small></div>
+                                        {% endif %}
+                                        {% if form.expected_return_minute.errors %}
+                                            <div class="text-danger"><small>{{ form.expected_return_minute.errors.0 }}</small></div>
+                                        {% endif %}
+                                        {% if form.expected_return_ampm.errors %}
+                                            <div class="text-danger"><small>{{ form.expected_return_ampm.errors.0 }}</small></div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="{{ form.purpose.id_for_label }}" class="form-label">Purpose of Outing</label>
+                                        {{ form.purpose }}
+                                    </div>
+                                </div>
+                            
+                                <div class="alert alert-warning border-0 mt-4">
+                                    <div class="d-flex">
+                                        <i class="fas fa-exclamation-triangle me-3 mt-1"></i>
+                                        <div>
+                                            <strong>Important:</strong> A verification code will be sent to your parent at <strong>{{ student.parent_mobile }}</strong>. Please ensure this is correct.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 py-2" id="back-step-btn">
+                                        <i class="fas fa-arrow-left me-2"></i>Back
+                                    </button>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 py-2">
+                                        Submit Request <i class="fas fa-paper-plane ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const step1Tab = new bootstrap.Tab(document.getElementById('nav-step1-tab'));
+    const step2Tab = new bootstrap.Tab(document.getElementById('nav-step2-tab'));
+    const nextBtn = document.getElementById('next-step-btn');
+    const backBtn = document.getElementById('back-step-btn');
+    const step2TabLink = document.getElementById('nav-step2-tab');
+
+    nextBtn.addEventListener('click', function() {
+        step2TabLink.classList.remove('disabled');
+        step2Tab.show();
+    });
+
+    backBtn.addEventListener('click', function() {
+        step1Tab.show();
+    });
+
+    // Bootstrap form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>
+{% endblock %}

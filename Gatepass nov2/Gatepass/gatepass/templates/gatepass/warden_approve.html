@@ -1,0 +1,296 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Review Gatepass - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    :root {
+        --primary-light: #e9f5ff;
+        --success-light: #e6f8f0;
+        --warning-light: #fff8e6;
+        --danger-light: #ffeff0;
+        --info-light: #eef9ff;
+        --border-color: #dee2e6;
+    }
+
+    .page-header h1 {
+        font-weight: 700;
+    }
+
+    .main-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+    }
+
+    .profile-section {
+        padding: 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--bs-primary), var(--primary-light));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .student-name {
+        font-weight: 600;
+        font-size: 2rem;
+    }
+
+    .student-id {
+        font-size: 1.2rem;
+        color: #6c757d;
+    }
+
+    .details-section {
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 0.5rem;
+    }
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 40px;
+        height: 3px;
+        background-color: var(--bs-primary);
+        border-radius: 2px;
+    }
+
+    .detail-card {
+        background-color: #f8f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.2s ease-in-out;
+    }
+    .detail-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .detail-card .icon {
+        font-size: 1.5rem;
+        color: var(--bs-primary);
+        width: 40px;
+        text-align: center;
+    }
+
+    .detail-card .text strong {
+        display: block;
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 0.1rem;
+    }
+
+    .detail-card .text span, .detail-card .text a {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #212529;
+        text-decoration: none;
+    }
+    .detail-card .text a:hover {
+        color: var(--bs-primary);
+    }
+
+    .purpose-card {
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .action-form-card {
+        background-color: #ffffff;
+        border-radius: 16px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        height: 100%;
+    }
+
+    .form-check-switch.fs-4 {
+        font-size: 1.2rem !important; /* Override default size */
+    }
+
+    .btn-check:checked+.btn-outline-success {
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+    .btn-check:checked+.btn-outline-danger {
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+
+    .readonly-overlay {
+        background-color: rgba(248, 249, 250, 0.9);
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+    }
+
+</style>
+
+<div class="page-header mb-4 d-flex justify-content-between align-items-center">
+    <h1 class="fw-bold">Review Gatepass Request</h1>
+    <a href="{% url 'warden_dashboard' %}" class="btn btn-outline-secondary rounded-pill"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+</div>
+
+<div class="main-card">
+    <div class="row g-0">
+        <!-- Left Side: Student & Gatepass Info -->
+        <div class="col-lg-7">
+            <div class="profile-section d-flex align-items-center gap-4">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div>
+                    <h2 class="student-name mb-1">{{ gatepass.student.student_name }}</h2>
+                    <p class="student-id mb-0">{{ gatepass.student.hall_ticket_no }}</p>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h3 class="section-title">Gatepass Details</h3>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="detail-card"><div class="icon"><i class="fas fa-door-open"></i></div><div class="text"><strong>Room No</strong><span>{{ gatepass.student.room_no }}</span></div></div></div>
+                    <div class="col-md-6"><div class="detail-card"><div class="icon"><i class="fas fa-calendar-day"></i></div><div class="text"><strong>Outing Date</strong><span>{{ gatepass.outing_date }}</span></div></div></div>
+                    <div class="col-md-6"><div class="detail-card"><div class="icon"><i class="fas fa-clock"></i></div><div class="text"><strong>Outing Time</strong><span>{{ gatepass.outing_time }}</span></div></div></div>
+                    <div class="col-md-6"><div class="detail-card"><div class="icon"><i class="fas fa-calendar-check"></i></div><div class="text"><strong>Expected Return</strong><span>{{ gatepass.expected_return_date }}</span></div></div></div>
+                </div>
+
+                <div class="detail-card purpose-card">
+                    <div class="icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="text">
+                        <strong>Purpose of Leave</strong>
+                        <span class="fs-6">{{ gatepass.purpose }}</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title mt-5">Parent Contact Information</h3>
+                <div class="row g-3">
+                    <div class="col-md-6"><div class="detail-card"><div class="icon"><i class="fas fa-user-friends"></i></div><div class="text"><strong>Parent Name</strong><span>{{ gatepass.student.parent_name }}</span></div></div></div>
+                    <div class="col-md-6"><div class="detail-card"><div class="icon"><i class="fas fa-phone-alt"></i></div><div class="text"><strong>Parent Mobile</strong><a href="tel:{{ gatepass.student.parent_mobile }}">{{ gatepass.student.parent_mobile }}</a></div></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Action Form -->
+        <div class="col-lg-5 bg-light">
+            <div class="p-lg-4 p-3 h-100">
+                <div class="action-form-card position-sticky" style="top: 2rem;">
+                    {% if readonly %}
+                        <div class="text-center p-3 h-100 d-flex flex-column justify-content-center">
+                            <i class="fas fa-lock fa-4x text-muted mb-4"></i>
+                            <h4 class="fw-bold">Request Processed</h4>
+                            <p class="fs-5 mb-2">This gatepass is <strong>{{ gatepass.get_status_display }}</strong>.</p>
+                            {% if gatepass.warden_approval %}
+                                <p class="text-muted small mb-3">
+                                    By: {{ gatepass.warden_approval.get_full_name|default:gatepass.warden_approval.username }} on {{ gatepass.warden_approval_timestamp|date:"d M Y, P" }}
+                                </p>
+                            {% endif %}
+                            {% if gatepass.status == 'warden_rejected' and gatepass.warden_rejection_reason %}
+                                <div class="alert alert-danger small p-2 mb-4 mx-auto" style="max-width: 300px;">
+                                    <strong class="d-block mb-1">Reason for Rejection:</strong>
+                                    {{ gatepass.warden_rejection_reason }}
+                                </div>
+                            {% endif %}
+                            <a href="{% url 'warden_dashboard' %}" class="btn btn-primary rounded-pill px-4 py-2 mt-3">
+                                <i class="fas fa-arrow-left me-2"></i>Return to Dashboard
+                            </a>
+                        </div>
+                    {% else %}
+                        <h3 class="fw-bold mb-4 text-center">Action Required</h3>
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Parent Verification Card -->
+                            <div class="card border-warning mb-4 shadow-sm">
+                                <div class="card-header bg-warning-light border-0">
+                                    <h6 class="fw-bold mb-0 text-center"><i class="fas fa-phone-volume me-2"></i>Parent Verification</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="form-check form-switch d-flex justify-content-center align-items-center ps-0">
+                                        <label class="form-check-label me-3" for="{{ form.parent_verification.id_for_label }}">Verification Confirmed</label>
+                                        {{ form.parent_verification }}
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        Call parent at <a href="tel:{{ gatepass.student.parent_mobile }}" class="fw-bold">{{ gatepass.student.parent_mobile }}</a> to confirm.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Warden's Decision -->
+                            <div class="mb-4">
+                                <h6 class="fw-bold mb-3 text-center">Warden's Decision</h6>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="action" id="action_approve" value="approve" autocomplete="off" required>
+                                    <label class="btn btn-lg btn-outline-success rounded-start-pill py-3" for="action_approve"><i class="fas fa-check me-2"></i>Approve</label>
+
+                                    <input type="radio" class="btn-check" name="action" id="action_reject" value="reject" autocomplete="off" required>
+                                    <label class="btn btn-lg btn-outline-danger rounded-end-pill py-3" for="action_reject"><i class="fas fa-times me-2"></i>Reject</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Rejection Reason -->
+                            <div id="rejection-reason" style="display: none;" class="mb-4">
+                                <label for="{{ form.rejection_reason.id_for_label }}" class="form-label fw-bold text-danger">Rejection Reason *</label>
+                                {{ form.rejection_reason }}
+                                {% if form.rejection_reason.errors %}
+                                    <div class="text-danger small mt-1">{{ form.rejection_reason.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <hr class="my-4">
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill py-3 fw-bold">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Decision
+                                </button>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const actionRadios = document.querySelectorAll('input[name="action"]');
+    const rejectionReason = document.getElementById('rejection-reason');
+    
+    function toggleRejectionReason() {
+        if (!rejectionReason) return;
+        const rejectSelected = document.getElementById('action_reject').checked;
+        rejectionReason.style.display = rejectSelected ? 'block' : 'none';
+    }
+
+    actionRadios.forEach(radio => radio.addEventListener('change', toggleRejectionReason));
+    toggleRejectionReason(); // Initial check
+});
+</script>
+{% endblock %}

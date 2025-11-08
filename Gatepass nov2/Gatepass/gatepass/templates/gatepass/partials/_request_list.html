@@ -1,0 +1,98 @@
+{% comment %}
+Reusable partial to display a list of gatepass requests.
+It adapts to a table on desktop and cards on mobile.
+
+Expects the following context variables:
+- request_list: The queryset or list of gatepass objects.
+- list_type: A string to identify the type of list for headers and actions.
+  e.g., 'pending', 'students_out', 'returned', 'approved', 'rejected'
+- empty_message: A dictionary with 'icon', 'title', and 'text' for the empty state.
+{% endcomment %}
+
+{% if request_list %}
+    <!-- Desktop Table -->
+    <div class="table-responsive d-none d-md-block">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Details</th>
+                    {% if list_type == 'pending' %}
+                        <th>Dates</th>
+                        <th>Purpose</th>
+                        <th>Action</th>
+                    {% elif list_type == 'students_out' %}
+                        <th>Out Since</th>
+                        <th>Expected Return</th>
+                        <th>Purpose</th>
+                    {% elif list_type == 'returned' %}
+                        <th>Returned On</th>
+                        <th>Verified By</th>
+                        <th>Notes</th>
+                    {% elif list_type == 'approved' %}
+                        <th>Outing Date</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                    {% elif list_type == 'rejected' %}
+                        <th>Outing Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in request_list %}
+                <tr>
+                    <td>
+                        <div class="fw-bold">{{ request.student.student_name }}</div>
+                        <div class="small text-muted">{{ request.student.hall_ticket_no }}</div>
+                    </td>
+                    <td>
+                        <div class="small">Room: {{ request.student.room_no }}</div>
+                        <div class="small text-muted">Parent: {{ request.student.parent_mobile }}</div>
+                    </td>
+                    {% if list_type == 'pending' %}
+                        <td>
+                            <div class="small">Out: {{ request.outing_date }} {{ request.outing_time }}</div>
+                            <div class="small text-muted">Return: {{ request.expected_return_date }}</div>
+                        </td>
+                        <td>{{ request.purpose|truncatechars:30 }}</td>
+                        <td>
+                            <a href="{% url 'warden_approve_gatepass' request.id %}" class="btn btn-sm btn-primary"><i class="fas fa-eye me-1"></i>Review</a>
+                        </td>
+                    {% elif list_type == 'students_out' %}
+                        <td>{{ request.outing_date }} {{ request.outing_time }}</td>
+                        <td>{{ request.expected_return_date }} {{ request.expected_return_time }}</td>
+                        <td>{{ request.purpose|truncatechars:30 }}</td>
+                    {% elif list_type == 'returned' %}
+                        <td>{{ request.actual_return_date }} {{ request.actual_return_time }}</td>
+                        <td>{{ request.return_verified_by.username|default:"N/A" }}</td>
+                        <td>{{ request.return_notes|truncatechars:30|default:"-" }}</td>
+                    {% elif list_type == 'approved' %}
+                        <td>{{ request.outing_date }}</td>
+                        <td>{{ request.purpose|truncatechars:30 }}</td>
+                        <td><span class="badge bg-success-light text-success">Approved</span></td>
+                    {% elif list_type == 'rejected' %}
+                        <td>{{ request.outing_date }}</td>
+                        <td>{{ request.warden_rejection_reason|truncatechars:30|default:"-" }}</td>
+                        <td><span class="badge bg-danger-light text-danger">Rejected</span></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div class="d-md-none">
+        {% for request in request_list %}
+            {% include "gatepass/partials/_request_card.html" with request=request list_type=list_type %}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state text-center">
+        <i class="{{ empty_message.icon }} fa-4x {{ empty_message.color|default:'text-muted' }} mb-3"></i>
+        <h5 class="fw-bold">{{ empty_message.title }}</h5>
+        <p class="text-muted">{{ empty_message.text }}</p>
+    </div>
+{% endif %}

@@ -1,0 +1,260 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Super Admin Dashboard - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+
+
+<div class="page-header mb-5">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bolder text-primary mb-1"><i class="fas fa-cogs me-2"></i>Super Admin Dashboard</h1>
+            <p class="mb-0 text-secondary">Manage users, monitor system activity, and oversee all gatepasses.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row mb-5 g-4">
+    <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12">
+        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="card-body d-flex align-items-center p-4">
+                <div class="icon-square bg-warning-subtle text-warning flex-shrink-0 me-3">
+                    <i class="fas fa-user-clock fa-2x"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-1">Pending Users</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ pending_users|length }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12">
+        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="card-body d-flex align-items-center p-4">
+                <div class="icon-square bg-danger-subtle text-danger flex-shrink-0 me-3">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-1">Overdue Returns</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ overdue_count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12">
+        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="card-body d-flex align-items-center p-4">
+                <div class="icon-square bg-info-subtle text-info flex-shrink-0 me-3">
+                    <i class="fas fa-clock fa-2x"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-1">Pending Gatepasses</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ pending_gatepasses }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12">
+        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="card-body d-flex align-items-center p-4">
+                <div class="icon-square bg-primary-subtle text-primary flex-shrink-0 me-3">
+                    <i class="fas fa-list-alt fa-2x"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted text-uppercase fw-semibold mb-1">Total Gatepasses</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_gatepasses }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-pills nav-fill flex-column flex-md-row mb-4" id="adminTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pending-users-tab" data-bs-toggle="tab" data-bs-target="#pending-users-pane" type="button" role="tab">
+            <i class="fas fa-user-clock me-1"></i> Pending Users
+            <span class="badge rounded-pill bg-light text-dark ms-1">{{ pending_users|length }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pending-passes-tab" data-bs-toggle="tab" data-bs-target="#pending-passes-pane" type="button" role="tab">
+            <i class="fas fa-inbox me-1"></i> Pending Gatepasses
+            <span class="badge rounded-pill bg-light text-dark ms-1">{{ pending_gatepass_approvals|length }}</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="overdue-tab" data-bs-toggle="tab" data-bs-target="#overdue-pane" type="button" role="tab">
+            <i class="fas fa-exclamation-triangle me-1"></i> Overdue Returns
+            <span class="badge rounded-pill bg-light text-dark ms-1">{{ overdue_count }}</span>
+        </button>
+    </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="adminTabContent">
+    <!-- Pending Users -->
+    <div class="tab-pane fade show active" id="pending-users-pane" role="tabpanel">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h5 class="fw-bold"><i class="fas fa-user-plus me-2 text-warning"></i>Approve New User Registrations</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Name</th>
+                                    <th>Registered</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in pending_users %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ user.username }}</div>
+                                        <div class="small text-muted">{{ user.email }}</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-light text-primary">{{ user.role|title }}</span>
+                                    </td>
+                                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                    <td>{{ user.date_joined|date:"d M, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'approve_user' user.id %}" class="btn btn-sm btn-success"><i class="fas fa-check"></i></a>
+                                        <a href="{% url 'reject_user' user.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="fas fa-times"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center">
+                        <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                        <h5 class="fw-bold">No Pending Users</h5>
+                        <p class="text-muted">All user registrations have been processed.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Gatepasses -->
+    <div class="tab-pane fade" id="pending-passes-pane" role="tabpanel">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h5 class="fw-bold"><i class="fas fa-inbox me-2 text-info"></i>Pending Gatepass Approvals</h5>
+            </div>
+            <div class="card-body">
+                {% if pending_gatepass_approvals %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Outing Date</th>
+                                    <th>Purpose</th>
+                                    <th>Requested</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for gatepass in pending_gatepass_approvals %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">{{ gatepass.student.student_name }}</div>
+                                        <div class="small text-muted">{{ gatepass.student.hall_ticket_no }}</div>
+                                    </td>
+                                    <td>{{ gatepass.outing_date }} {{ gatepass.outing_time }}</td>
+                                    <td>{{ gatepass.purpose|truncatechars:30 }}</td>
+                                    <td>{{ gatepass.created_at|timesince }} ago</td>
+                                    <td>
+                                        <a href="{% url 'superadmin_approve_gatepass' gatepass.id %}" class="btn btn-sm btn-primary"><i class="fas fa-search me-1"></i>Review</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center">
+                        <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                        <h5 class="fw-bold">No Pending Gatepasses</h5>
+                        <p class="text-muted">All gatepass requests have been processed.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Returns -->
+    <div class="tab-pane fade" id="overdue-pane" role="tabpanel">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h5 class="fw-bold"><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Overdue Student Returns</h5>
+            </div>
+            <div class="card-body">
+                {% if overdue_returns %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Expected Return</th>
+                                    <th>Days Overdue</th>
+                                    <th>Parent Contact</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for gatepass in overdue_returns %}
+                                <tr class="table-danger">
+                                    <td>
+                                        <div class="fw-bold">{{ gatepass.student.student_name }}</div>
+                                        <div class="small text-muted">{{ gatepass.student.hall_ticket_no }}</div>
+                                    </td>
+                                    <td>{{ gatepass.expected_return_date }} {{ gatepass.expected_return_time }}</td>
+                                    <td><span class="badge bg-danger">{{ gatepass.expected_return_date|timesince }}</span></td>
+                                    <td>{{ gatepass.student.parent_mobile }}</td>
+                                    <td>
+                                        <a href="tel:{{ gatepass.student.parent_mobile }}" class="btn btn-sm btn-danger"><i class="fas fa-phone"></i> Call</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center">
+                        <i class="fas fa-user-check fa-4x text-success mb-3"></i>
+                        <h5 class="fw-bold">No Overdue Returns</h5>
+                        <p class="text-muted">All students are accounted for.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h5 class="fw-bold"><i class="fas fa-tools me-2"></i>Admin Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="/admin/" class="btn btn-outline-primary"><i class="fas fa-cog me-2"></i>Full Django Admin</a>
+                    <a href="{% url 'debug_info' %}" class="btn btn-outline-info"><i class="fas fa-bug me-2"></i>Debug Info</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

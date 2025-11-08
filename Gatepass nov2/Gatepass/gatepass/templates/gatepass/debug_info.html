@@ -1,0 +1,243 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Debug Information - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-bug me-2"></i>Debug Information</h2>
+        <p class="text-muted">System data for debugging gatepass workflow</p>
+    </div>
+</div>
+
+<!-- Students -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Students</h5>
+            </div>
+            <div class="card-body">
+                {% if students %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Gender</th>
+                                    <th>Approved</th>
+                                    <th>Hall Ticket</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td>{{ student.student_name }}</td>
+                                    <td>{{ student.user.username }}</td>
+                                    <td>{{ student.user.gender|default:"Not Set" }}</td>
+                                    <td>{{ student.user.is_approved }}</td>
+                                    <td>{{ student.hall_ticket_no }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No students found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Wardens -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Wardens</h5>
+            </div>
+            <div class="card-body">
+                {% if wardens %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Gender</th>
+                                    <th>Approved</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for warden in wardens %}
+                                <tr>
+                                    <td>{{ warden.username }}</td>
+                                    <td>{{ warden.first_name }} {{ warden.last_name }}</td>
+                                    <td>{{ warden.gender|default:"Not Set" }}</td>
+                                    <td>{{ warden.is_approved }}</td>
+                                    <td>{{ warden.email }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No wardens found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Security</h5>
+            </div>
+            <div class="card-body">
+                {% if security %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Name</th>
+                                    <th>Approved</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sec in security %}
+                                <tr>
+                                    <td>{{ sec.username }}</td>
+                                    <td>{{ sec.first_name }} {{ sec.last_name }}</td>
+                                    <td>{{ sec.is_approved }}</td>
+                                    <td>{{ sec.email }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No security staff found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gatepasses -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Gatepasses</h5>
+            </div>
+            <div class="card-body">
+                {% if gatepasses %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Status</th>
+                                    <th>Outing Date</th>
+                                    <th>Student Gender</th>
+                                    <th>Warden Approval</th>
+                                    <th>Security Approval</th>
+                                    <th>Actual Return</th>
+                                    <th>Return Verified By</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for gatepass in gatepasses %}
+                                <tr>
+                                    <td>{{ gatepass.student.student_name }}</td>
+                                    <td>
+                                        {% if gatepass.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif gatepass.status == 'warden_approved' %}
+                                            <span class="badge bg-info">Warden Approved</span>
+                                        {% elif gatepass.status == 'warden_rejected' %}
+                                            <span class="badge bg-danger">Warden Rejected</span>
+                                        {% elif gatepass.status == 'security_approved' %}
+                                            <span class="badge bg-info">Security Approved</span>
+                                        {% elif gatepass.status == 'returned' %}
+                                            <span class="badge bg-success">Returned</span>
+                                        {% elif gatepass.status == 'completed' %}
+                                            <span class="badge bg-secondary">Completed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ gatepass.outing_date }}</td>
+                                    <td>{{ gatepass.student.user.gender|default:"Not Set" }}</td>
+                                    <td>{{ gatepass.warden_approval.username|default:"None" }}</td>
+                                    <td>{{ gatepass.security_approval.username|default:"None" }}</td>
+                                    <td>
+                                        {% if gatepass.actual_return_date %}
+                                            {{ gatepass.actual_return_date }} {{ gatepass.actual_return_time }}
+                                        {% else %}
+                                            Not returned
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ gatepass.return_verified_by.username|default:"None" }}</td>
+                                    <td>{{ gatepass.created_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No gatepasses found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Notifications</h5>
+            </div>
+            <div class="card-body">
+                {% if notifications %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Message</th>
+                                    <th>Gatepass</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for notification in notifications %}
+                                <tr>
+                                    <td>{{ notification.user.username }}</td>
+                                    <td>{{ notification.notification_type }}</td>
+                                    <td>{{ notification.message }}</td>
+                                    <td>{{ notification.gatepass.student.student_name }}</td>
+                                    <td>{{ notification.created_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No notifications found</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

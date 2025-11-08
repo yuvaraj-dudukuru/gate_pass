@@ -1,0 +1,149 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Student Registration - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 py-4">
+    <div class="text-center mb-4">
+        <a class="navbar-brand d-flex align-items-center gap-2 fs-4 fw-bold me-4 py-0" href="{% url 'home' %}" style="letter-spacing:.6px;">
+            <span class="d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 p-2" style="width:40px;height:40px;">
+                <i class="fas fa-university fa-lg text-primary"></i>
+            </span>
+            <span class="d-block text-primary">Hostel Gatepass System</span>
+        </a>
+    </div>
+    <div class="card mx-auto" style="max-width: 700px;">
+        <div class="card-header text-center">
+            <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Student Registration</h5>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.hall_ticket_no.id_for_label }}" class="form-label">Hall Ticket Number *</label>
+                        {{ form.hall_ticket_no }}
+                        {% if form.hall_ticket_no.errors %}
+                            <div class="text-danger small mt-1">{{ form.hall_ticket_no.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.student_name.id_for_label }}" class="form-label">Student Name *</label>
+                        {{ form.student_name }}
+                        {% if form.student_name.errors %}
+                            <div class="text-danger small mt-1">{{ form.student_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.room_no.id_for_label }}" class="form-label">Room Number *</label>
+                        {{ form.room_no }}
+                        {% if form.room_no.errors %}
+                            <div class="text-danger small mt-1">{{ form.room_no.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.parent_name.id_for_label }}" class="form-label">Parent Name *</label>
+                        {{ form.parent_name }}
+                        {% if form.parent_name.errors %}
+                            <div class="text-danger small mt-1">{{ form.parent_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.parent_mobile.id_for_label }}" class="form-label">Parent Mobile Number *</label>
+                        {{ form.parent_mobile }}
+                        {% if form.parent_mobile.errors %}
+                            <div class="text-danger small mt-1">{{ form.parent_mobile.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.mobile_number.id_for_label }}" class="form-label">Student Mobile Number</label>
+                        {{ form.mobile_number }}
+                        {% if form.mobile_number.errors %}
+                            <div class="text-danger small mt-1">{{ form.mobile_number.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                        {{ form.gender }}
+                        {% if form.gender.errors %}
+                            <div class="text-danger small mt-1">{{ form.gender.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">Password *</label>
+                        <div class="input-group">
+                            {{ form.password1 }}
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword1Visibility"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password *</label>
+                        <div class="input-group">
+                            {{ form.password2 }}
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword2Visibility"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="alert alert-info border-info mt-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> Your username will be automatically generated as: <code>Name@last4digits</code> of your hall ticket number.
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-icon">
+                        <i class="fas fa-user-plus"></i><span>Register</span>
+                    </button>
+                    <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                        Already have an account? Login here
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.getElementById('togglePassword1Visibility').addEventListener('click', function (e) {
+    const passwordInput = document.getElementById('{{ form.password1.id_for_label }}');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.querySelector('i').classList.toggle('fa-eye');
+    this.querySelector('i').classList.toggle('fa-eye-slash');
+  });
+  document.getElementById('togglePassword2Visibility').addEventListener('click', function (e) {
+    const passwordInput = document.getElementById('{{ form.password2.id_for_label }}');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.querySelector('i').classList.toggle('fa-eye');
+    this.querySelector('i').classList.toggle('fa-eye-slash');
+  });
+</script>
+{% endblock %}

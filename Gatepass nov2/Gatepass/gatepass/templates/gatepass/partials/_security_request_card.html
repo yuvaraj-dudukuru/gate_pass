@@ -1,0 +1,46 @@
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-body p-3">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <h6 class="fw-bold mb-0">{{ request.student.student_name }}</h6>
+                <small class="text-muted">{{ request.student.hall_ticket_no }} | Room: {{ request.student.room_no }}</small>
+            </div>
+            <div class="ms-3 text-end">
+                {% if list_type == 'security_pending' %}
+                    <a href="{% url 'security_approve_gatepass' request.id %}" class="btn btn-sm btn-success px-3">Exit</a>
+                {% elif list_type == 'security_return' %}
+                    <a href="{% url 'security_record_return' request.id %}" class="btn btn-sm btn-primary px-3">Return</a>
+                {% elif list_type == 'returned' %}
+                     <span class="badge rounded-pill bg-light text-success">Returned</span>
+                {% endif %}
+            </div>
+        </div>
+        <hr class="my-2">
+        <div class="row g-2 small">
+            {% if list_type == 'security_pending' %}
+                <div class="col-6">
+                    <small class="text-muted d-block">Outing</small>
+                    <div class="fw-semibold">{{ request.outing_date }} {{ request.outing_time }}</div>
+                </div>
+                <div class="col-6">
+                    <small class="text-muted d-block">Warden</small>
+                    <div class="fw-semibold">{{ request.warden_approval.get_full_name|default:"Approved" }}</div>
+                </div>
+            {% elif list_type == 'security_return' %}
+                <div class="col-6">
+                    <small class="text-muted d-block">Out Since</small>
+                    <div class="fw-semibold">{{ request.outing_date }} {{ request.outing_time }}</div>
+                </div>
+                <div class="col-6">
+                    <small class="text-muted d-block">Expected</small>
+                    <div class="fw-semibold">{{ request.expected_return_date }}</div>
+                </div>
+            {% elif list_type == 'returned' %}
+                <div class="col-12">
+                    <small class="text-muted d-block">Returned On</small>
+                    <div class="fw-semibold">{{ request.actual_return_date }} {{ request.actual_return_time }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

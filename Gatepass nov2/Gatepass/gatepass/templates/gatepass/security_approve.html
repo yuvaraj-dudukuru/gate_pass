@@ -1,0 +1,114 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Security Approval - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+
+            <div class="text-center mb-4">
+                <h1 class="fw-bolder">Security Gate Approval</h1>
+                <p class="text-muted fs-5">Verify student identity and approve exit.</p>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="row g-4 align-items-center">
+                        <!-- Student Profile -->
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-user-circle fa-9x text-primary"></i>
+                            <h3 class="fw-bold mt-3 mb-1">{{ gatepass.student.student_name }}</h3>
+                            <p class="text-muted mb-1">{{ gatepass.student.hall_ticket_no }}</p>
+                            <span class="badge bg-light text-dark fs-6">Room: {{ gatepass.student.room_no }}</span>
+                        </div>
+
+                        <!-- Gatepass Info -->
+                        <div class="col-md-8">
+                            <div class="d-flex justify-content-between align-items-start mb-4">
+                                <h4 class="fw-bold text-primary mb-0">Gatepass Details</h4>
+                                <div class="text-end">
+                                    <span class="badge bg-success-soft text-success fs-6">
+                                        <i class="fas fa-check-circle me-1"></i> Warden Approved
+                                    </span>
+                                    {% if gatepass.warden_approval %}
+                                    <div class="small text-muted">by {{ gatepass.warden_approval.get_full_name|default:'N/A' }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 py-3 d-flex justify-content-between">
+                                    <span class="text-muted">Purpose</span>
+                                    <strong class="text-dark">{{ gatepass.purpose }}</strong>
+                                </li>
+                                <li class="list-group-item px-0 py-3 d-flex justify-content-between">
+                                    <span class="text-muted">Outing Time</span>
+                                    <strong class="text-dark">{{ gatepass.outing_date }} at {{ gatepass.outing_time|time:"g:i A" }}</strong>
+                                </li>
+                                <li class="list-group-item px-0 py-3 d-flex justify-content-between">
+                                    <span class="text-muted">Expected Return</span>
+                                    <strong class="text-dark">{{ gatepass.expected_return_date }} at {{ gatepass.expected_return_time|time:"g:i A" }}</strong>
+                                </li>
+                                <li class="list-group-item px-0 py-3 d-flex justify-content-between">
+                                    <span class="text-muted">Contact</span>
+                                    <strong class="text-dark">{{ gatepass.student.user.mobile_number|default:'N/A' }}</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Action Area -->
+                    <div class="action-area">
+                        {% if readonly %}
+                            <div class="alert alert-info d-flex align-items-center rounded-3">
+                                <i class="fas fa-info-circle fa-2x me-3"></i>
+                                <div>
+                                    <h5 class="alert-heading fw-bold">Already Processed</h5>
+                                    This request is <strong>{{ gatepass.get_status_display }}</strong>.
+                                    {% if gatepass.security_approval %}<br>Processed by: {{ gatepass.security_approval.get_full_name }}{% endif %}
+                                </div>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <a href="{% url 'security_dashboard' %}" class="btn btn-secondary btn-lg"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning mb-4 rounded-3" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                                    <div>
+                                        <h5 class="alert-heading fw-bold">Verify Student Identity</h5>
+                                        <p class="mb-0">Please visually confirm the student's identity before granting gate access.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="d-grid gap-3">
+                                    <button type="submit" class="btn btn-success btn-lg fw-bold fs-5">
+                                        <i class="fas fa-check-circle me-2"></i>Confirm & Approve Exit
+                                    </button>
+                                    <a href="{% url 'security_dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-success-soft {
+        background-color: rgba(var(--bs-success-rgb), 0.15);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Home - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="p-5 rounded mb-4 hero">
+            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
+                <div>
+                    <h1 class="display-6 mb-1">Hostel Gatepass System</h1>
+                    <p class="mb-0 text-muted">Fast, transparent and secure gatepass workflow for hostels.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-icon"><i class="fa-solid fa-right-to-bracket"></i><span>Login</span></a>
+                    <a href="#roles" class="btn btn-outline-primary">Explore roles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<div class="row">
+    <div id="roles" class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Student</h5>
+                <p class="card-text">Register and request gatepass for outings.</p>
+                <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-user-tie fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Warden</h5>
+                <p class="card-text">Approve gatepass requests from students.</p>
+                <a href="{% url 'register' %}" class="btn btn-success">Register</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Security</h5>
+                <p class="card-text">Manage gate access and final approvals.</p>
+                <a href="{% url 'register' %}" class="btn btn-warning">Register</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-cogs fa-3x text-danger mb-3"></i>
+                <h5 class="card-title">Super Admin</h5>
+                <p class="card-text">Manage all users and system settings.</p>
+                <a href="{% url 'login' %}?role=superadmin" class="btn btn-danger">Admin Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">How It Works</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="bg-light p-3 rounded border">
+                            <i class="fas fa-edit fa-2x text-primary mb-2"></i>
+                            <h6>1. Student Registration</h6>
+                            <p class="small">Students register with their details and wait for admin approval.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="bg-light p-3 rounded border">
+                            <i class="fas fa-paper-plane fa-2x text-success mb-2"></i>
+                            <h6>2. Request Gatepass</h6>
+                            <p class="small">Students submit gatepass requests with outing details.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="bg-light p-3 rounded border">
+                            <i class="fas fa-check-circle fa-2x text-warning mb-2"></i>
+                            <h6>3. Approval Process</h6>
+                            <p class="small">Warden and Security approve requests in sequence.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

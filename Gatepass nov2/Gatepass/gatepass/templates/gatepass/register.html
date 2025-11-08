@@ -1,0 +1,241 @@
+{% extends 'gatepass/auth_base.html' %}
+
+{% block title %}Register - Hostel Gatepass{% endblock %}
+
+{% block content %}
+<div class="card mx-auto" style="max-width: 720px;">
+  <div class="card-body">
+    <h4 class="text-center mb-3">Register</h4>
+    <form method="post" novalidate id="unifiedRegisterForm">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-5 mb-3">
+          <label class="form-label" for="role">Register as</label>
+          <select class="form-select" id="role" name="role">
+            <option value="student" {% if active_role == 'student' or not active_role %}selected{% endif %}>Student</option>
+            <option value="warden" {% if active_role == 'warden' %}selected{% endif %}>Warden</option>
+            <option value="security" {% if active_role == 'security' %}selected{% endif %}>Security</option>
+          </select>
+        </div>
+        <div class="col-md-7"></div>
+      </div>
+
+      <!-- Student fields -->
+      {% if student_form %}{% endif %}
+      <div class="role-section" data-role="student">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.hall_ticket_no.id_for_label }}">Hall Ticket Number *</label>
+            {{ student_form.hall_ticket_no }}
+            {% if student_form and student_form.hall_ticket_no.errors %}<div class="text-danger">{{ student_form.hall_ticket_no.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.student_name.id_for_label }}">Student Name *</label>
+            {{ student_form.student_name }}
+            {% if student_form and student_form.student_name.errors %}<div class="text-danger">{{ student_form.student_name.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.room_no.id_for_label }}">Room Number *</label>
+            {{ student_form.room_no }}
+            {% if student_form and student_form.room_no.errors %}<div class="text-danger">{{ student_form.room_no.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.parent_name.id_for_label }}">Parent Name *</label>
+            {{ student_form.parent_name }}
+            {% if student_form and student_form.parent_name.errors %}<div class="text-danger">{{ student_form.parent_name.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.parent_mobile.id_for_label }}">Parent Mobile Number *</label>
+            {{ student_form.parent_mobile }}
+            {% if student_form and student_form.parent_mobile.errors %}<div class="text-danger">{{ student_form.parent_mobile.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label" for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label class="form-label" for="mobile_number">Student Mobile Number</label>
+            <input type="tel" class="form-control" id="mobile_number" name="mobile_number" maxlength="10">
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label" for="gender">Gender</label>
+            <select class="form-select" id="gender" name="gender">
+              <option value="">Select Gender</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.password1.id_for_label }}">Password *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            {{ student_form.password1 }}
+            <button class="btn btn-outline-secondary" type="button" data-toggle="password" data-target="{{ student_form.password1.id_for_label }}"><i class="fa-solid fa-eye"></i></button>
+          </div>
+            {% if student_form and student_form.password1.errors %}<div class="text-danger">{{ student_form.password1.errors.0 }}</div>{% endif %}
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label" for="{{ student_form.password2.id_for_label }}">Confirm Password *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            {{ student_form.password2 }}
+            <button class="btn btn-outline-secondary" type="button" data-toggle="password" data-target="{{ student_form.password2.id_for_label }}"><i class="fa-solid fa-eye"></i></button>
+          </div>
+            {% if student_form and student_form.password2.errors %}<div class="text-danger">{{ student_form.password2.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="alert alert-info border-info mt-2">
+          <i class="fas fa-info-circle me-2"></i>
+          Username will be generated as <code>Name@last4digits</code> of hall ticket
+        </div>
+      </div>
+
+      <!-- Warden fields -->
+      {% if warden_form %}{% endif %}
+      <div class="role-section" data-role="warden">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.first_name.id_for_label }}">First Name *</label>
+            {{ warden_form.first_name }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.last_name.id_for_label }}">Last Name *</label>
+            {{ warden_form.last_name }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.username.id_for_label }}">Username *</label>
+            {{ warden_form.username }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.email.id_for_label }}">Email *</label>
+            {{ warden_form.email }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.mobile_number.id_for_label }}">Mobile</label>
+            {{ warden_form.mobile_number }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.gender.id_for_label }}">Gender</label>
+            {{ warden_form.gender }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.password1.id_for_label }}">Password *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            {{ warden_form.password1 }}
+            <button class="btn btn-outline-secondary" type="button" data-toggle="password" data-target="{{ warden_form.password1.id_for_label }}"><i class="fa-solid fa-eye"></i></button>
+          </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ warden_form.password2.id_for_label }}">Confirm Password *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            {{ warden_form.password2 }}
+            <button class="btn btn-outline-secondary" type="button" data-toggle="password" data-target="{{ warden_form.password2.id_for_label }}"><i class="fa-solid fa-eye"></i></button>
+          </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ warden_form.department.id_for_label }}">Department</label>
+          {{ warden_form.department }}
+        </div>
+      </div>
+
+      <!-- Security fields -->
+      {% if security_form %}{% endif %}
+      <div class="role-section" data-role="security">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.first_name.id_for_label }}">First Name *</label>
+            {{ security_form.first_name }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.last_name.id_for_label }}">Last Name *</label>
+            {{ security_form.last_name }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.username.id_for_label }}">Username *</label>
+            {{ security_form.username }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.email.id_for_label }}">Email *</label>
+            {{ security_form.email }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.mobile_number.id_for_label }}">Mobile</label>
+            {{ security_form.mobile_number }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.shift.id_for_label }}">{{ security_form.shift.label }}</label>
+            {{ security_form.shift }}
+            {% if security_form.shift.errors %}<div class="text-danger small">{{ security_form.shift.errors.0 }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.password1.id_for_label }}">Password *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            {{ security_form.password1 }}
+            <button class="btn btn-outline-secondary" type="button" data-toggle="password" data-target="{{ security_form.password1.id_for_label }}"><i class="fa-solid fa-eye"></i></button>
+          </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="{{ security_form.password2.id_for_label }}">Confirm Password *</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            {{ security_form.password2 }}
+            <button class="btn btn-outline-secondary" type="button" data-toggle="password" data-target="{{ security_form.password2.id_for_label }}"><i class="fa-solid fa-eye"></i></button>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-grid mt-3">
+        <button class="btn btn-primary" type="submit">Create account</button>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer text-center">
+    <small>Already have an account? <a href="{% url 'login' %}">Login</a></small>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+  (function(){
+    function setActive(role){
+      document.querySelectorAll('.role-section').forEach(function(el){
+        el.style.display = (el.getAttribute('data-role') === role) ? '' : 'none';
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+      var select = document.getElementById('role');
+      var initial = select.value || 'student';
+      setActive(initial);
+      select.addEventListener('change', function(){ setActive(this.value); });
+    });
+  })();
+</script>
+{% endblock %}
+{% endblock %}
+
+

@@ -1,0 +1,71 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Login - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 py-4">
+  <div class="text-center mb-4">
+    <a class="navbar-brand d-flex align-items-center gap-2 fs-4 fw-bold me-4 py-0" href="{% url 'home' %}" style="letter-spacing:.6px;">
+      <span class="d-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 p-2" style="width:40px;height:40px;">
+        <i class="fas fa-university fa-lg text-primary"></i>
+      </span>
+      <span class="d-block text-primary">Hostel Gatepass System</span>
+    </a>
+  </div>
+  <div class="card mx-auto" style="max-width: 460px;">
+    <div class="card-body p-4">
+      <h4 class="text-center mb-3">Login</h4>
+      {% if role_title %}
+      <div class="mb-2 text-muted text-center">{{ role_title }}</div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_username" class="form-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+            <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username" required>
+          </div>
+          {% if role == 'student' %}
+          <div class="form-help mt-1">Format: Name@last4digits</div>
+          {% elif role == 'warden' %}
+          <div class="form-help mt-1">Use credentials approved by Super Admin.</div>
+          {% elif role == 'security' %}
+          <div class="form-help mt-1">Use credentials provided to the security desk.</div>
+          {% elif role == 'superadmin' %}
+          <div class="form-help mt-1">Admin access required.</div>
+          {% else %}
+          <div class="form-help mt-1">Students: Name@last4digits</div>
+          {% endif %}
+        </div>
+        <div class="mb-3">
+          <label for="id_password" class="form-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+            <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password" required>
+            <button class="btn btn-outline-secondary" type="button" id="togglePasswordVisibility"><i class="fa-solid fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-footer text-center py-3">
+      <small>Don't have an account? <a href="{% url 'register' %}">Register</a></small>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.getElementById('togglePasswordVisibility').addEventListener('click', function (e) {
+    const passwordInput = document.getElementById('id_password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    this.querySelector('i').classList.toggle('fa-eye');
+    this.querySelector('i').classList.toggle('fa-eye-slash');
+  });
+</script>
+{% endblock %}

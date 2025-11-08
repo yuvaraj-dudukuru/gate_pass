@@ -1,0 +1,113 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Approve Gatepass - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="container-xl py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="display-5 fw-bolder text-primary mb-0"><i class="fas fa-user-shield me-3"></i>Superadmin Gatepass Review</h1>
+            <p class="text-muted mt-1 mb-0 lead">Review the full details of the request and make a final decision.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Column: Gatepass Details -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-0 pt-3">
+                    <h5 class="fw-bold"><i class="fas fa-file-alt me-2 text-primary"></i>Gatepass Request Details</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Student Info -->
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="fas fa-user-circle fa-4x text-primary me-3"></i>
+                        <div>
+                            <h4 class="fw-bold mb-0">{{ gatepass.student.student_name }}</h4>
+                            <span class="text-muted">{{ gatepass.student.hall_ticket_no }} | Room: {{ gatepass.student.room_no }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Gatepass Info -->
+                    <h6 class="fw-bold text-muted">Request Information</h6>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item px-0 d-flex justify-content-between"><span>Purpose:</span><strong>{{ gatepass.purpose }}</strong></li>
+                        <li class="list-group-item px-0 d-flex justify-content-between"><span>Outing:</span><strong>{{ gatepass.outing_date }} at {{ gatepass.outing_time }}</strong></li>
+                        <li class="list-group-item px-0 d-flex justify-content-between"><span>Expected Return:</span><strong>{{ gatepass.expected_return_date }} at {{ gatepass.expected_return_time }}</strong></li>
+                        <li class="list-group-item px-0 d-flex justify-content-between"><span>Status:</span>{% include "gatepass/partials/status_badge.html" with gatepass=gatepass %}</li>
+                    </ul>
+
+                    <!-- Parent Info -->
+                    <h6 class="fw-bold text-muted">Contact Information</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item px-0 d-flex justify-content-between"><span>Parent:</span><strong>{{ gatepass.student.parent_name }}</strong></li>
+                        <li class="list-group-item px-0 d-flex justify-content-between"><span>Parent Mobile:</span><a href="tel:{{ gatepass.student.parent_mobile }}" class="fw-bold">{{ gatepass.student.parent_mobile }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Approval Form -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-0 pt-3">
+                    <h5 class="fw-bold"><i class="fas fa-gavel me-2 text-success"></i>Final Decision</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <form method="post" id="approvalForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <p class="fw-bold">As a Superadmin, you can override previous decisions.</p>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="action" id="approveRadio" value="approve" required>
+                                <label class="form-check-label fw-bold text-success" for="approveRadio"><i class="fas fa-check-circle me-1"></i>Approve</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="action" id="rejectRadio" value="reject" required>
+                                <label class="form-check-label fw-bold text-danger" for="rejectRadio"><i class="fas fa-times-circle me-1"></i>Reject</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="rejectionReasonGroup" style="display: none;">
+                            <label for="rejection_reason" class="form-label">Rejection Reason</label>
+                            <textarea class="form-control" name="rejection_reason" id="rejection_reason" rows="3" placeholder="Provide a clear reason for rejection"></textarea>
+                        </div>
+                        
+                        <div class="mt-auto">
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save me-2"></i>Submit Decision</button>
+                                <a href="{% url 'superadmin_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const approveRadio = document.getElementById('approveRadio');
+    const rejectRadio = document.getElementById('rejectRadio');
+    const rejectionReasonGroup = document.getElementById('rejectionReasonGroup');
+    const rejectionTextarea = document.getElementById('rejection_reason');
+
+    function toggleRejectionReason() {
+        if (rejectRadio.checked) {
+            rejectionReasonGroup.style.display = 'block';
+            rejectionTextarea.required = true;
+        } else {
+            rejectionReasonGroup.style.display = 'none';
+            rejectionTextarea.required = false;
+        }
+    }
+
+    approveRadio.addEventListener('change', toggleRejectionReason);
+    rejectRadio.addEventListener('change', toggleRejectionReason);
+
+    // Initial check in case of page reload with a selected radio
+    toggleRejectionReason();
+});
+</script>
+{% endblock %}

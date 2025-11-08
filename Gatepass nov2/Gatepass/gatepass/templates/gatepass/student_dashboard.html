@@ -1,0 +1,173 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Student Dashboard - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3 py-md-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Dashboard</h1>
+            <p class="text-muted mb-0 d-none d-md-block">Welcome back, {{ user.username }}. Request and track your gate passes here.</p>
+        </div>
+        <a href="{% url 'create_gatepass' %}" class="btn btn-primary rounded-pill px-3 py-2 d-flex align-items-center">
+            <i class="fas fa-plus me-2"></i> <span class="d-none d-md-inline">Create New Request</span>
+        </a>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-primary text-white rounded-3 p-2 p-md-3 me-2 me-md-3">
+                        <i class="fas fa-list fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="card-title text-muted mb-1">Total</h6>
+                        <h4 class="fw-bold mb-0">{{ total_requests }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-warning text-white rounded-3 p-2 p-md-3 me-2 me-md-3">
+                        <i class="fas fa-clock fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="card-title text-muted mb-1">Pending</h6>
+                        <h4 class="fw-bold mb-0">{{ pending_requests }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-success text-white rounded-3 p-2 p-md-3 me-2 me-md-3">
+                        <i class="fas fa-check fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="card-title text-muted mb-1">Approved</h6>
+                        <h4 class="fw-bold mb-0">{{ approved_requests }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center p-3">
+                    <div class="bg-danger text-white rounded-3 p-2 p-md-3 me-2 me-md-3">
+                        <i class="fas fa-times fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="card-title text-muted mb-1">Rejected</h6>
+                        <h4 class="fw-bold mb-0">{{ rejected_requests }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row g-4">
+        <!-- Recent Gatepass Requests -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-3">
+                    <h5 class="fw-bold"><i class="fas fa-list-alt me-2"></i>Recent Gatepass Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if gatepasses %}
+                        <!-- Desktop Table -->
+                        <div class="table-responsive d-none d-lg-block">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Outing Date</th>
+                                        <th scope="col">Return Date</th>
+                                        <th scope="col">Purpose</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for gatepass in gatepasses|slice:":5" %}
+                                    <tr>
+                                        <td>{{ gatepass.outing_date|date:"d M, Y" }} <span class="text-muted d-block small">{{ gatepass.outing_time }}</span></td>
+                                        <td>{{ gatepass.expected_return_date|date:"d M, Y" }} <span class="text-muted d-block small">{{ gatepass.expected_return_time }}</span></td>
+                                        <td>{{ gatepass.purpose|truncatechars:30 }}</td>
+                                        <td>
+                                            {% include "gatepass/partials/status_badge.html" %}
+                                        </td>
+                                        <td class="text-muted">{{ gatepass.created_at|date:"d M, Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Mobile Cards -->
+                        <div class="d-lg-none">
+                            {% for gatepass in gatepasses|slice:":5" %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="fw-bold">{{ gatepass.purpose|truncatechars:25 }}</h6>
+                                        {% include "gatepass/partials/status_badge.html" %}
+                                    </div>
+                                    <div class="text-muted small mt-2">
+                                        <p class="mb-1"><strong>Out:</strong> {{ gatepass.outing_date|date:"d M, Y" }} at {{ gatepass.outing_time }}</p>
+                                        <p class="mb-0"><strong>Return:</strong> {{ gatepass.expected_return_date|date:"d M, Y" }} at {{ gatepass.expected_return_time }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                            <h5 class="fw-bold">No Gatepass Requests Yet</h5>
+                            <p class="text-muted">Click the "Create New Request" button to get started.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Profile -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-3">
+                    <h5 class="fw-bold"><i class="fas fa-user-circle me-2"></i>Your Profile</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Name</span>
+                            <strong class="text-dark text-end">{{ student.student_name }}</strong>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Hall Ticket</span>
+                            <span class="text-dark text-end">{{ student.hall_ticket_no }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Room No</span>
+                            <span class="text-dark text-end">{{ student.room_no }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Parent</span>
+                            <span class="text-dark text-end">{{ student.parent_name }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted">Parent Mobile</span>
+                            <span class="text-dark text-end">{{ student.parent_mobile }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

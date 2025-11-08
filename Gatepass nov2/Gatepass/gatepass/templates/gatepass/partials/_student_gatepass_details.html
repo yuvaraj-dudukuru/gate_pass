@@ -1,0 +1,49 @@
+{% comment %}
+Reusable partial to display student and gatepass details.
+Expects 'gatepass' object in context.
+{% endcomment %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-user-check text-primary me-2"></i>Student Information</h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-4">
+            <i class="fas fa-user-circle fa-5x text-muted me-4"></i>
+            <div>
+                <h3 class="fw-bolder mb-0">{{ gatepass.student.student_name }}</h3>
+                <p class="text-muted mb-0 fs-5">{{ gatepass.student.hall_ticket_no }}</p>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6"><div class="detail-item"><small class="text-muted">Room No</small><p class="fw-semibold mb-0">{{ gatepass.student.room_no }}</p></div></div>
+            <div class="col-md-6"><div class="detail-item"><small class="text-muted">Branch & Year</small><p class="fw-semibold mb-0">{{ gatepass.student.branch }} - {{ gatepass.student.year }}</p></div></div>
+            <div class="col-md-6"><div class="detail-item"><small class="text-muted">Parent Name</small><p class="fw-semibold mb-0">{{ gatepass.student.parent_name }}</p></div></div>
+            <div class="col-md-6"><div class="detail-item"><small class="text-muted">Parent Mobile</small><p class="fw-semibold mb-0"><a href="tel:{{ gatepass.student.parent_mobile }}">{{ gatepass.student.parent_mobile }}</a></p></div></div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-file-alt text-primary me-2"></i>Gatepass Details</h5>
+    </div>
+    <div class="card-body p-4">
+        <div class="row g-3">
+            <div class="col-12"><div class="detail-item"><small class="text-muted">Purpose of Leave</small><p class="fw-semibold mb-0">{{ gatepass.purpose }}</p></div></div>
+            <div class="col-md-6"><div class="detail-item"><small class="text-muted">Outing Date & Time</small><p class="fw-semibold mb-0">{{ gatepass.outing_date }} at {{ gatepass.outing_time }}</p></div></div>
+            <div class="col-md-6"><div class="detail-item"><small class="text-muted">Expected Return</small><p class="fw-semibold mb-0">{{ gatepass.expected_return_date }} at {{ gatepass.expected_return_time }}</p></div></div>
+            <div class="col-12 mt-3">
+                <div class="alert alert-secondary-light d-flex align-items-center mb-0">
+                    <i class="fas fa-info-circle fa-2x me-3"></i>
+                    <div>
+                        <h6 class="alert-heading mb-0 fw-bold">Current Status: {{ gatepass.get_status_display }}</h6>
+                        {% if gatepass.warden_approval %}
+                            <small class="text-muted">Warden action by: {{ gatepass.warden_approval.get_full_name|default:gatepass.warden_approval.username }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

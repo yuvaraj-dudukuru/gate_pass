@@ -1,0 +1,104 @@
+{% extends 'gatepass/base.html' %}
+
+{% block title %}Record Student Return - Hostel Gatepass System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+
+            <div class="text-center mb-4">
+                <h1 class="fw-bolder"><i class="fas fa-house-user me-2"></i>Record Student Return</h1>
+                <p class="text-muted fs-5">Confirm student identity and record their return.</p>
+            </div>
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Student & Gatepass Info -->
+                    <div class="row g-4 align-items-center mb-4">
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-user-circle fa-9x text-primary"></i>
+                            <h3 class="fw-bold mt-3 mb-1">{{ gatepass.student.student_name }}</h3>
+                            <p class="text-muted mb-1">{{ gatepass.student.hall_ticket_no }}</p>
+                            <span class="badge bg-light text-dark fs-6">Room: {{ gatepass.student.room_no }}</span>
+                        </div>
+
+                        <div class="col-md-8">
+                            <h4 class="fw-bold text-primary mb-3">Gatepass Summary</h4>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item px-0 py-2 d-flex justify-content-between">
+                                    <span class="text-muted">Purpose</span>
+                                    <strong class="text-dark">{{ gatepass.purpose }}</strong>
+                                </li>
+                                <li class="list-group-item px-0 py-2 d-flex justify-content-between">
+                                    <span class="text-muted">Left At</span>
+                                    <strong class="text-dark">{{ gatepass.outing_date }} {{ gatepass.outing_time|time:"g:i A" }}</strong>
+                                </li>
+                                <li class="list-group-item px-0 py-2 d-flex justify-content-between">
+                                    <span class="text-muted">Expected Return</span>
+                                    <strong class="text-danger">{{ gatepass.expected_return_date }} {{ gatepass.expected_return_time|time:"g:i A" }}</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Return Form -->
+                    <div>
+                        <h4 class="fw-bold text-success mb-3"><i class="fas fa-edit me-2"></i>Confirmation Form</h4>
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.actual_return_date.id_for_label }}" class="form-label fw-bold"><i class="fas fa-calendar-alt me-1"></i> Actual Return Date *</label>
+                                    {{ form.actual_return_date }}
+                                    <div class="invalid-feedback">Please select a valid return date.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold"><i class="fas fa-clock me-1"></i> Actual Return Time *</label>
+                                    <div class="row g-2">
+                                        <div class="col-5">
+                                            <label for="{{ form.actual_return_hour.id_for_label }}" class="visually-hidden">Return Hour</label>
+                                            {{ form.actual_return_hour }}
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="{{ form.actual_return_minute.id_for_label }}" class="visually-hidden">Return Minute</label>
+                                            {{ form.actual_return_minute }}
+                                        </div>
+                                        <div class="col-2">
+                                            <label for="{{ form.actual_return_ampm.id_for_label }}" class="visually-hidden">AM/PM</label>
+                                            {{ form.actual_return_ampm }}
+                                        </div>
+                                    </div>
+                                    {% if form.actual_return_hour.errors or form.actual_return_minute.errors or form.actual_return_ampm.errors %}
+                                        <div class="text-danger small mt-1">Please select a valid time.</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <label for="{{ form.return_notes.id_for_label }}" class="form-label fw-bold"><i class="fas fa-sticky-note me-1"></i> Return Notes (Optional)</label>
+                                {{ form.return_notes }}
+                                <div class="form-text">Note any issues (e.g., late return, student's condition).</div>
+                            </div>
+
+                            <div class="d-grid gap-3 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg fw-bold fs-5">
+                                    <i class="fas fa-check-circle me-2"></i>Confirm & Record Return
+                                </button>
+                                <a href="{% url 'security_dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
