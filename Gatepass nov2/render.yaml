@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: cd Gatepass && pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
-    startCommand: cd Gatepass && gunicorn hostel_gatepass.wsgi:application
+    startCommand: cd Gatepass && gunicorn hostel_gatepass.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: DEBUG
         value: False
